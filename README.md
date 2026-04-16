@@ -1,1 +1,151 @@
-# Result-Publish-Management-System
+import java.util.*;
+
+abstract class Person {
+    protected String name;
+    protected int id;
+
+    public Person(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public abstract void displayInfo();
+}
+
+class Student extends Person {
+    private double marks;
+
+    public Student(String name, int id, double marks) {
+        super(name, id);
+        this.marks = marks;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public double getMarks() {
+        return marks;
+    }
+
+    @Override
+    public void displayInfo() {
+        System.out.println("\n--- Student Result ---");
+        System.out.println("Student Name: " + name);
+        System.out.println("ID: " + id);
+        System.out.println("Marks: " + marks);
+    }
+}
+
+class Teacher extends Person {
+
+    public Teacher(String name, int id) {
+        super(name, id);
+    }
+
+    @Override
+    public void displayInfo() {
+        System.out.println("Teacher Name: " + name);
+        System.out.println("ID: " + id);
+    }
+}
+
+public class Main {
+
+    static ArrayList<Student> students = new ArrayList<>();
+    static Scanner sc = new Scanner(System.in);
+    static final String TEACHER_USERNAME = "tm";
+    static final String TEACHER_PASSWORD = "0000";
+
+    public static void main(String[] args) {
+
+        while (true) {
+            System.out.println("\n====== Result Publish Management System ======");
+            System.out.println("1. Student Panel");
+            System.out.println("2. Teacher Panel");
+            System.out.println("3. Exit");
+            System.out.print("Enter choice: ");
+
+            int choice = sc.nextInt();
+
+            switch (choice) {
+                case 1:
+                    studentPanel();
+                    break;
+                case 2:
+                    teacherLoginPanel();
+                    break;
+                case 3:
+                    System.out.println("Exiting system...");
+                    return;
+                default:
+                    System.out.println("Invalid choice!");
+            }
+        }
+    }
+
+    public static void studentPanel() {
+        if (students.isEmpty()) {
+            System.out.println("⚠️ No student data available!");
+            return;
+        }
+
+        System.out.print("\nEnter Student ID: ");
+        int id = sc.nextInt();
+
+        boolean found = false;
+
+        for (Student s : students) {
+            if (s.getId() == id) {
+                s.displayInfo();
+                found = true;
+                break;
+            }
+        }
+
+        if (!found) {
+            System.out.println("❌ Student not found!");
+        }
+    }
+
+    public static void teacherLoginPanel() {
+        System.out.println("\n--- Teacher Panel Login ---");
+        System.out.print("Enter username: ");
+        String username = sc.next();
+
+        System.out.print("Enter password: ");
+        String password = sc.next();
+
+        if (!username.equals(TEACHER_USERNAME) || !password.equals(TEACHER_PASSWORD)) {
+            System.out.println("❌ Invalid teacher username or password!");
+            return;
+        }
+
+        teacherPanel();
+    }
+
+    public static void teacherPanel() {
+        System.out.println("\n--- Add New Student ---");
+
+        System.out.print("Enter student name: ");
+        String name = sc.next();
+
+        System.out.print("Enter ID: ");
+        int id = sc.nextInt();
+
+        for (Student s : students) {
+            if (s.getId() == id) {
+                System.out.println("❌ ID already exists!");
+                return;
+            }
+        }
+
+        System.out.print("Enter Marks: ");
+        double marks = sc.nextDouble();
+
+        students.add(new Student(name, id, marks));
+
+        System.out.println("✅ Student added successfully!");
+    }
+}
+
